@@ -29,7 +29,7 @@ for i in range(0, f1.__len__() - 1):
     vec.append(f1[i][0] + f1[i][1] * 1j)  # 向量变换
 
 if __name__ == '__main__':
-    p = Pool(4)
+    p = Pool(8)
     c = []
     for i in range(-t1, t1 + 1):
         res = p.apply_async(proccess, args=(i,))

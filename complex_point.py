@@ -78,12 +78,12 @@ def output_():
         if i[0] == 'l':
             x,y = line(i[3],i[1],i[2])
             for j in range(0,i[3]):
-                f.append([x[j],y[j]])#沿x轴翻折
+                f.append([x[j],y[j]])
 
         if i[0] == 'c':
             x, y = bezier(i[3], i[1], i[2])
             for j in range(0, i[3]):
-                f.append([x[j], y[j]])#沿x轴翻折
+                f.append([x[j], y[j]])
     return f
 
 add_time()
