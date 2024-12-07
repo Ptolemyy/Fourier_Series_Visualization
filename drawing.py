@@ -29,7 +29,7 @@ w1,h1 = [3276,2400]#缩放图像分辨率
 img4 = np.zeros((h1, w1,3), dtype=np.uint8)
 img = cv2.imread("frames/canvas.jpg")
 
-n = 10#成像放大率
+n = 100#成像放大率
 cores = 4
 
 count = args.start
@@ -47,7 +47,7 @@ def transform():#-3 -2 -1 0 1 2 3变换为0 1 -1 2 -2 3 -3
 def relative_point(param,t):
     point_ = []
     for i in param:
-        point_.append([math.floor(math.cos(i[0]+t*i[2]*2*math.pi)*i[1]),math.floor(math.sin(i[0]+t*i[2]*2*math.pi)*i[1]),i[1]])
+        point_.append([math.cos(i[0]+t*i[2]*2*math.pi)*i[1],math.sin(i[0]+t*i[2]*2*math.pi)*i[1],i[1]])
     return point_
 def absolute_point(param):
     #total_x = w/2
@@ -72,7 +72,6 @@ def scaled_point(param):
             total_x1 -= param[i][0] * n * n1
             total_y1 -= param[i][1] * n * n1
             point_.append([total_x1,total_y1,math.fabs(param[i][2] * n * n1)])
-            print(math.fabs(param[i][2] * n * n1))
     return point_
 def scaled_line(i):
     loss_x = points[i-1][points[i-1].__len__()-1][0] * n - w1 / 2
@@ -85,7 +84,7 @@ def scaled_line(i):
         except:
             b_x,b_y = [points[j-1][points[j-1].__len__()-1][0] * n - loss_x,points[j-1][points[j-1].__len__()-1][1] * n - loss_y]
         if (a_x > 0 or b_x > 0) and (a_y > 0 or b_y > 0) and (a_x < w1 or b_x < w1) and (a_y < h1 or b_y < h1):
-            point_.append([a_x,a_y])
+            point_.append([a_x,a_y,j])
     return point_
 def main_draw(i):
 
@@ -114,13 +113,14 @@ def main_draw(i):
     for j in range(0,point1.__len__()-1):
         cv2.arrowedLine(img3,(int(point1[j+1][0]),int(point1[j+1][1])),(int(point1[j][0]),int(point1[j][1])),(255,255,255),thickness = 4)
         try:
-            cv2.circle(img3,(int(point1[j][0]),int(point1[j][1])),int(point1[j][2]),(169,169,169),thickness=1)
+            cv2.circle(img3,(int(point1[j+1][0]),int(point1[j+1][1])),int(point1[j+1][2]),(169,169,169),thickness=1)
             #print(point1[j][2])
         except:
             None
     for j in range(0, point2.__len__()):
         try:
-            cv2.line(img3, (p_x1, p_y1), (int(point2[j][0]), int(point2[j][1])), (0, 255, 255), thickness=50)
+            if point2[j][2] == point2[j-1][2] + 1: 
+                cv2.line(img3, (p_x1, p_y1), (int(point2[j][0]), int(point2[j][1])), (0, 255, 255), thickness=50)
         except:
             None
         p_x1, p_y1 = [int(point2[j][0]), int(point2[j][1])]
